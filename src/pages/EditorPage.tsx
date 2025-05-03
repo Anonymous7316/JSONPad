@@ -276,8 +276,8 @@ export default function EditorPage() {
              navigate(`/?docId=${newDoc.id}`, { replace: true }); // Use replace to avoid back button issues
         }
 
-        // const savedDoc = saveDocument(docToSave);
-        // setDocumentName(savedDoc.name);
+        const savedDoc = saveDocument(docToSave);
+        setDocumentName(docToSave.name);
 
         setHasUnsavedChanges(false);
         toast({
