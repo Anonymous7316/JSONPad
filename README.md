@@ -1,4 +1,4 @@
-# Firebase Studio (Vite + React version)
+# JSON Placeholder (Vite + React version)
 
 This is a Vite + React starter for a JSON Formatter & Editor.
 
