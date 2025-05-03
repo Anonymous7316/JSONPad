@@ -204,7 +204,7 @@ export default function EditorPage() {
       }
       if (hasUnsavedChanges || !documentId) {
          toast({
-            variant: "warning",
+            variant: "destructive",
             title: hasUnsavedChanges ? "Unsaved Changes" : "Document Not Saved",
             description: "Please save your document before copying the link.",
          });
@@ -276,12 +276,12 @@ export default function EditorPage() {
              navigate(`/?docId=${newDoc.id}`, { replace: true }); // Use replace to avoid back button issues
         }
 
-        const savedDoc = saveDocument(docToSave);
-        setDocumentName(savedDoc.name);
+        // const savedDoc = saveDocument(docToSave);
+        // setDocumentName(savedDoc.name);
 
         setHasUnsavedChanges(false);
         toast({
-            title: `"${savedDoc.name}" Saved`,
+            title: `"${docToSave.name}" Saved`,
             description: `Your document ${isNewDoc ? 'created and' : ''} saved successfully.`,
         });
         return true;
