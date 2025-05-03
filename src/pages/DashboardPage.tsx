@@ -80,7 +80,7 @@ export default function DashboardPage() {
       <div className="p-4 sm:p-6 lg:p-8 flex-grow pb-24"> {/* Add padding-bottom to account for fixed footer */}
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b gap-4 sm:gap-0">
           <h1 className="text-3xl font-semibold font-sans flex items-center gap-2">
-            <FileJson className="h-8 w-8 text-muted-foreground flex-shrink-0 mt-0.5" />JSON Placeholder{/*My JSON Documents*/}
+            <FileJson className="h-8 w-8 text-muted-foreground flex-shrink-0 mt-0.5" />JSONPad{/*My JSON Documents*/}
           </h1>
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
              {/* Search Input */}

@@ -1,4 +1,4 @@
-# JSON Placeholder (Vite + React version)
+# JSONPad (Vite + React version)
 
 This is a Vite + React starter for a JSON Formatter & Editor.
 
