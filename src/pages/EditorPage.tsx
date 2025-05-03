@@ -447,7 +447,7 @@ export default function EditorPage() {
                         size="sm"
                         onClick={saveJson}
                         title="Save JSON"
-                        disabled={!jsonInput.trim()}
+                        disabled={!hasUnsavedChanges}
                         variant={hasUnsavedChanges ? "default" : "secondary"}
                         >
                         <Save className={hasUnsavedChanges ? "animate-pulse" : ""} />
