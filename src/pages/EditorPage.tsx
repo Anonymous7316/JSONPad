@@ -204,7 +204,7 @@ export default function EditorPage() {
       }
       if (hasUnsavedChanges || !documentId) {
          toast({
-            variant: "destructive",
+            variant: "warning",
             title: hasUnsavedChanges ? "Unsaved Changes" : "Document Not Saved",
             description: "Please save your document before copying the link.",
          });
@@ -277,11 +277,11 @@ export default function EditorPage() {
         }
 
         const savedDoc = saveDocument(docToSave);
-        setDocumentName(docToSave.name);
+        setDocumentName(savedDoc.name);
 
         setHasUnsavedChanges(false);
         toast({
-            title: `"${docToSave.name}" Saved`,
+            title: `"${savedDoc.name}" Saved`,
             description: `Your document ${isNewDoc ? 'created and' : ''} saved successfully.`,
         });
         return true;
@@ -447,7 +447,7 @@ export default function EditorPage() {
                         size="sm"
                         onClick={saveJson}
                         title="Save JSON"
-                        disabled={!hasUnsavedChanges}
+                        disabled={!jsonInput.trim()}
                         variant={hasUnsavedChanges ? "default" : "secondary"}
                         >
                         <Save className={hasUnsavedChanges ? "animate-pulse" : ""} />

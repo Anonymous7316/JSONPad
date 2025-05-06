@@ -1,6 +1,9 @@
 "use client" // This directive is not needed in Vite, but harmless
+
+import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "@/components/theme-provider" // Updated import path
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,

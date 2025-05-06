@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Toaster } from "./src/components/ui/toaster.tsx";
-import { ThemeProvider } from './src/components/theme-provider.tsx'; // Assuming you create this
-import EditorPage from './src/pages/EditorPage.tsx';
-import DashboardPage from './src/pages/DashboardPage.tsx';
-import ViewPage from './src/pages/ViewPage.tsx';
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from '@/components/theme-provider'; // Assuming you create this
+import EditorPage from '@/pages/EditorPage';
+import DashboardPage from '@/pages/DashboardPage';
+import ViewPage from '@/pages/ViewPage';
 
 function App() {
   return (

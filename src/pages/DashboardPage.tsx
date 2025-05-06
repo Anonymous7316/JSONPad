@@ -1,11 +1,11 @@
 // src/pages/DashboardPage.tsx
-import React, { useState, useMemo, useEffect } from 'react'; // Import useEffect
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input'; // Import Input component
-import { FileJson, PlusCircle, Edit, Search, Trash2 } from 'lucide-react'; // Import Search and Trash2 icons
-import { getAllDocuments, deleteDocumentById, JsonDocument } from '@/lib/mock-documents'; // Import deleteDocumentById and JsonDocument type
+import { Input } from '@/components/ui/input';
+import { FileJson, PlusCircle, Edit, Search, Trash2, ImagePlus, FilePlus2 } from 'lucide-react';
+import { getAllDocuments, deleteDocumentById, JsonDocument } from '@/lib/mock-documents';
 import { formatDistanceToNow } from 'date-fns';
 import { ThemeToggle } from '@/components/theme-toggle';
 import {
@@ -17,30 +17,46 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"; // Import AlertDialog components
-import { useToast } from '@/hooks/use-toast'; // Import useToast
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ImageUploadDialog } from '@/components/ImageUploadDialog'; // Import the new dialog
 
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [documents, setDocuments] = useState<JsonDocument[]>([]);
-  const [searchQuery, setSearchQuery] = useState(''); // State for the search query
-  const [documentToDelete, setDocumentToDelete] = useState<JsonDocument | null>(null); // State for delete confirmation
+  const [searchQuery, setSearchQuery] = useState('');
+  const [documentToDelete, setDocumentToDelete] = useState<JsonDocument | null>(null);
+  const [isImageUploadDialogOpen, setIsImageUploadDialogOpen] = useState(false);
 
-  // Load documents on initial mount
+
   useEffect(() => {
     setDocuments(getAllDocuments());
   }, []);
 
-  const handleCreateNew = () => {
+  const handleCreateNewBlank = () => {
     navigate('/');
+  };
+
+  const handleCreateFromImages = () => {
+    setIsImageUploadDialogOpen(true);
+  };
+  
+  const handleDocumentCreatedFromImages = (documentId: string) => {
+    setDocuments(getAllDocuments()); // Refresh document list
+    navigate(`/?docId=${documentId}`); // Navigate to the new document in the editor
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  // Filter documents based on the search query
   const filteredDocuments = useMemo(() => {
     if (!searchQuery.trim()) {
       return documents;
@@ -58,7 +74,6 @@ export default function DashboardPage() {
     if (documentToDelete) {
       const deleted = deleteDocumentById(documentToDelete.id);
       if (deleted) {
-        // Update the documents state to reflect the deletion
         setDocuments(prevDocs => prevDocs.filter(doc => doc.id !== documentToDelete.id));
         toast({
           title: "Document Deleted",
@@ -71,19 +86,18 @@ export default function DashboardPage() {
            description: `Could not delete "${documentToDelete.name}".`,
          });
       }
-      setDocumentToDelete(null); // Close the dialog
+      setDocumentToDelete(null);
     }
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <div className="p-4 sm:p-6 lg:p-8 flex-grow pb-24"> {/* Add padding-bottom to account for fixed footer */}
+      <div className="p-4 sm:p-6 lg:p-8 flex-grow pb-24">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b gap-4 sm:gap-0">
           <h1 className="text-3xl font-semibold font-sans flex items-center gap-2">
             <FileJson className="h-8 w-8 text-muted-foreground flex-shrink-0 mt-0.5" />JSONPad{/*My JSON Documents*/}
           </h1>
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-             {/* Search Input */}
              <div className="relative flex-1 sm:flex-initial sm:w-64">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -91,26 +105,38 @@ export default function DashboardPage() {
                 placeholder="Search documents..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="pl-8 w-full" // Add padding for the icon
+                className="pl-8 w-full"
               />
              </div>
              <ThemeToggle />
-             <Button onClick={handleCreateNew}>
-               <PlusCircle className="mr-2 h-4 w-4" /> Create New
-             </Button>
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button>
+                    <PlusCircle className="mr-2 h-4 w-4" /> Create New
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleCreateNewBlank}>
+                    <FilePlus2 className="mr-2 h-4 w-4" />
+                    Blank Document
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleCreateFromImages}>
+                    <ImagePlus className="mr-2 h-4 w-4" />
+                    From Images
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
           </div>
         </header>
 
         <main>
-          {documents.length === 0 ? ( // Check documents length for the initial empty state
+          {documents.length === 0 ? (
             <div className="text-center text-muted-foreground mt-10">
               <FileJson className="mx-auto h-12 w-12 mb-4" />
               <p>No documents yet.</p>
-              <Button onClick={handleCreateNew} className="mt-4">
-                Create your first document
-              </Button>
+              {/* Removed the single create button, users will use the dropdown */}
             </div>
-          ) : filteredDocuments.length === 0 ? ( // Check filtered documents length for no search results
+          ) : filteredDocuments.length === 0 ? (
              <div className="text-center text-muted-foreground mt-10">
                <Search className="mx-auto h-12 w-12 mb-4" />
                <p>No documents found matching "{searchQuery}".</p>
@@ -135,7 +161,6 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent className="flex-grow flex flex-col justify-end pt-2">
                      <div className="mt-auto flex gap-2">
-                         {/* Use React Router Link component */}
                          <Link to={`/?docId=${doc.id}`} className="flex-1">
                            <Button variant="outline" size="sm" className="w-full">
                               <Edit className="mr-2 h-3.5 w-3.5" />
@@ -158,13 +183,12 @@ export default function DashboardPage() {
             </div>
           )}
         </main>
-      </div> {/* Close flex-grow container */}
+      </div>
 
        <footer className="fixed bottom-0 left-0 w-full py-4 border-t text-center text-sm text-muted-foreground font-sans bg-background">
-         <p>JSON Formatter & Editor</p>
+         <p>JSONPad - Formatter & Editor</p>
        </footer>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!documentToDelete} onOpenChange={(open) => !open && setDocumentToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -182,6 +206,12 @@ export default function DashboardPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ImageUploadDialog
+        open={isImageUploadDialogOpen}
+        onOpenChange={setIsImageUploadDialogOpen}
+        onDocumentCreated={handleDocumentCreatedFromImages}
+      />
     </div>
   );
 }

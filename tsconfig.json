@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "target": "ESNext", // Updated target
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "skipLibCheck": true,
 
@@ -22,7 +21,7 @@
     "esModuleInterop": true, // Ensure compatibility
 
     /* Paths */
-    "baseUrl": ".", // Base URL for path mapping
+     "baseUrl": ".", // Base URL for path mapping
     "paths": {
       "@/*": ["./src/*"]
     }
